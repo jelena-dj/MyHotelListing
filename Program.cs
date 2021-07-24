@@ -37,7 +37,7 @@ namespace MyHotelListing
 			{
 				Log.CloseAndFlush();
 			}
-			CreateHostBuilder(args).Build().Run();
+			CreateHostBuilder(args).Build().Run();	  //already in try?
 		}
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -8,7 +8,7 @@ namespace MyHotelListing.Data
 {
 	public class DatabaseContext : DbContext
 	{
-		public DatabaseContext(DbContextOptions options) : base(options)
+		public DatabaseContext(DbContextOptions options) : base(options)  //DbContext constructor variations
 		{}
 
 		public DbSet<Country> Countries { get; set; }
@@ -38,7 +38,7 @@ namespace MyHotelListing.Data
 					}
 				);
 
-				builder.Entity<Hotel>().HasData(
+			builder.Entity<Hotel>().HasData(
 					new Hotel
 					{
 						Id = 1,

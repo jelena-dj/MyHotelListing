@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MyHotelListing.Configurations;
 using MyHotelListing.Data;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,8 @@ namespace MyHotelListing
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-
 			services.AddDbContext<DatabaseContext>(options =>
-			  options.UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
+			  options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))); //UseSqlServer variations
 
 			services.AddCors(o => {
 				o.AddPolicy("AllowAll", builder =>
@@ -38,6 +38,8 @@ namespace MyHotelListing
 				.AllowAnyMethod()
 				.AllowAnyHeader());
 			});
+
+			services.AddAutoMapper(typeof(MapperInitializer));
 
 			services.AddSwaggerGen(c =>
 			{
@@ -70,6 +72,7 @@ namespace MyHotelListing
 			{
 				endpoints.MapControllers();
 			});
+			
 		}
 	}
 }
