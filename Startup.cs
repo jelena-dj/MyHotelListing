@@ -48,6 +48,8 @@ namespace MyHotelListing
 				.AllowAnyHeader());
 			});
 
+			//services.AddResponseCaching();
+
 			services.AddAutoMapper(typeof(MapperInitializer));
 
 			services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -60,6 +62,8 @@ namespace MyHotelListing
 
 			services.AddControllers().AddNewtonsoftJson(
 				option => option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+			//services.ConfigureVersioning();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,9 +77,13 @@ namespace MyHotelListing
 			app.UseSwagger();
 			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyHotelListing v1"));
 
+			app.ConfigureExceptionHandler();
+
 			app.UseHttpsRedirection();
 
 			app.UseCors("AllowAll");
+
+			//app.UseResponseCaching();
 
 			app.UseRouting();
 

@@ -7,20 +7,20 @@ using MyHotelListing.IRepository;
 using MyHotelListing.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyHotelListing.Controllers
 {
-	[Route("api/[controller]")]
+	[ApiVersion("2.0", Deprecated = true)]
+	[Route("api/Country")]
 	[ApiController]
-	public class CountryController : ControllerBase
+	public class CountryV2Controller : ControllerBase
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ILogger<CountryController> _logger;
 		private readonly IMapper _mapper;
 
-		public CountryController(IUnitOfWork unitOfWork, ILogger<CountryController> logger, IMapper mapper)
+		public CountryV2Controller(IUnitOfWork unitOfWork, ILogger<CountryController> logger, IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
 			_logger = logger;
@@ -32,17 +32,9 @@ namespace MyHotelListing.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> GetCountries([FromQuery] RequestParams requestParams)
 		{
-			//try
-			//{
-				var countries = await _unitOfWork.Contries.GetPagedList(requestParams);
-				var results = _mapper.Map<IList<CountryDTO>>(countries);
-				return Ok(results);
-			//}
-			//catch (Exception ex)
-			//{
-			//	_logger.LogError(ex, $"Issue in the {nameof(GetCountries)}");
-			//	return StatusCode(500, "Internal server error. Please try again later.");
-			//}
+			var countries = await _unitOfWork.Contries.GetPagedList(requestParams);
+			var results = _mapper.Map<IList<CountryDTO>>(countries);
+			return Ok(results);
 		}
 
 		[HttpGet("{id:int}", Name = "GetCountry")]
@@ -50,17 +42,9 @@ namespace MyHotelListing.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> GetCountry(int id)
 		{
-			//try
-			//{
-				var country = await _unitOfWork.Contries.Get(q => q.Id == id, new List<string> {"Hotels"});
-				var result = _mapper.Map<CountryDTO>(country);
-				return Ok(result);
-			//}
-			//catch (Exception ex)
-			//{
-			//	_logger.LogError(ex, $"Issue in the {nameof(GetCountry)}");
-			//	return StatusCode(500, "Internal server error. Please try again later.");
-			//}
+			var country = await _unitOfWork.Contries.Get(q => q.Id == id, new List<string> { "Hotels" });
+			var result = _mapper.Map<CountryDTO>(country);
+			return Ok(result);
 		}
 
 		[HttpPost]
@@ -74,19 +58,12 @@ namespace MyHotelListing.Controllers
 				_logger.LogError($"Invalid POST attempt in {nameof(CreateCountry)}");
 				return BadRequest(ModelState);
 			}
-			try
-			{
-				var country = _mapper.Map<Country>(countryDTO);
-				await _unitOfWork.Contries.Insert(country);
-				await _unitOfWork.Save();
 
-				return CreatedAtRoute("GetCountry", new { id = country.Id }, country);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, $"Issue in the {nameof(CreateCountry)}");
-				return StatusCode(500, "Internal server error. Please try again later.");
-			}
+			var country = _mapper.Map<Country>(countryDTO);
+			await _unitOfWork.Contries.Insert(country);
+			await _unitOfWork.Save();
+
+			return CreatedAtRoute("GetCountry", new { id = country.Id }, country);
 		}
 
 		[HttpPut("{id:int}")]
@@ -124,7 +101,7 @@ namespace MyHotelListing.Controllers
 			}
 		}
 
-		
+
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

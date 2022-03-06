@@ -6,6 +6,7 @@ using MyHotelListing.Models;
 using MyHotelListing.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -69,7 +70,10 @@ namespace HotelListing.Services
 
         private SigningCredentials GetSigningCredentials()
         {
-            var key = Environment.GetEnvironmentVariable("KEY");
+			//var key = Environment.GetEnvironmentVariable("KEY");
+            var jwtSettings = _configuration.GetSection("Jwt");
+            var key = jwtSettings.GetSection("KEY").Value;
+
             var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
